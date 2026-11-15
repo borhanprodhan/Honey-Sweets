@@ -1,0 +1,6 @@
+{
+  "name": "Honey-Sweets - Premium Honey & Sweets E-commerce",
+  "description": "Discover authentic raw honey, traditional Bengali sweets, flash deals, and express delivery in Gaibandha and across Bangladesh with Honey-Sweets.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
