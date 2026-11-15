@@ -172,9 +172,14 @@ function readStringStorage(key: string, fallback: string): string {
 }
 
 function normalizeProductAssets(prod: Product): Product {
+  if (!prod || typeof prod !== 'object') {
+    return INITIAL_PRODUCTS[0];
+  }
   return {
     ...prod,
-    images: Array.isArray(prod.images) ? prod.images.map(resolveAssetUrl) : [],
+    images: Array.isArray(prod.images) && prod.images.length > 0
+      ? prod.images.map(resolveAssetUrl)
+      : INITIAL_PRODUCTS[0].images,
   };
 }
 
@@ -237,7 +242,9 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   // Products
   const [products, setProducts] = useState<Product[]>(() => {
     const parsed = readStorage<Product[]>(STORAGE_KEYS.PRODUCTS, INITIAL_PRODUCTS);
-    return Array.isArray(parsed) ? parsed.map(normalizeProductAssets) : INITIAL_PRODUCTS;
+    return Array.isArray(parsed) && parsed.length > 0
+      ? parsed.filter((p) => p && typeof p === 'object').map(normalizeProductAssets)
+      : INITIAL_PRODUCTS;
   });
 
   useEffect(() => {
@@ -251,10 +258,12 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [cart, setCart] = useState<CartItem[]>(() => {
     const parsed = readStorage<CartItem[]>(STORAGE_KEYS.CART, []);
     return Array.isArray(parsed)
-      ? parsed.map((item) => ({
-          ...item,
-          product: normalizeProductAssets(item.product),
-        }))
+      ? parsed
+          .filter((item) => item && typeof item === 'object' && item.product)
+          .map((item) => ({
+            ...item,
+            product: normalizeProductAssets(item.product),
+          }))
       : [];
   });
 

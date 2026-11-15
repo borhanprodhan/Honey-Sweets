@@ -22,7 +22,7 @@ export const HomeView: React.FC = () => {
   const bestSellers = products.filter((p) => p.isBestSeller);
 
   // Pick first featured combo for mid-page spotlight
-  const comboSpotlight = products.find((p) => p.id === 'prod-honey-sweets-combo') || products[0];
+  const comboSpotlight = products.find((p) => p.id === 'prod-honey-sweets-combo') || products[0] || null;
 
   return (
     <div className="space-y-4">
@@ -66,6 +66,7 @@ export const HomeView: React.FC = () => {
       </section>
 
       {/* 5. Signature Combo Promotional Spotlight Banner */}
+      {comboSpotlight && (
       <section className="py-10 bg-[#FFF9EC]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white rounded-3xl border border-[#E5A000]/40 overflow-hidden shadow-lg grid grid-cols-1 lg:grid-cols-12 items-center">
@@ -126,6 +127,7 @@ export const HomeView: React.FC = () => {
           </div>
         </div>
       </section>
+      )}
 
       {/* 6. Why Choose Honey-Sweets */}
       <section className="py-12 bg-white border-t border-stone-200/60">

@@ -27,6 +27,8 @@ jobs:
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
+        with:
+          enablement: true
       - name: Install dependencies
         run: |
           if [ -f package-lock.json ]; then
@@ -35,8 +37,6 @@ jobs:
             npm install --no-audit --no-fund
           fi
       - name: Build with Vite
-        env:
-          VITE_BASE_PATH: "${{ steps.pages.outputs.base_path }}/"
         run: npm run build
       - name: Copy index.html to 404.html for SPA fallback
         run: cp dist/index.html dist/404.html
