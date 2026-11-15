@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { resolveAssetUrl } from '../assets/images';
 import {
   BANGLADESH_DISTRICTS,
   GAIBANDHA_UPAZILAS,
@@ -144,14 +145,48 @@ const STORAGE_KEYS = {
   LANG: 'honey_sweets_lang_v1',
 };
 
+function readStorage<T>(key: string, fallback: T): T {
+  try {
+    const raw = window.localStorage.getItem(key);
+    if (!raw) return fallback;
+    return JSON.parse(raw) as T;
+  } catch {
+    return fallback;
+  }
+}
+
+function writeStorage(key: string, value: unknown): void {
+  try {
+    window.localStorage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value));
+  } catch {
+    // Ignore storage quota or private-browsing errors
+  }
+}
+
+function readStringStorage(key: string, fallback: string): string {
+  try {
+    return window.localStorage.getItem(key) || fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function normalizeProductAssets(prod: Product): Product {
+  return {
+    ...prod,
+    images: Array.isArray(prod.images) ? prod.images.map(resolveAssetUrl) : [],
+  };
+}
+
 export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [language, setLanguageState] = useState<Language>(() => {
-    return (localStorage.getItem(STORAGE_KEYS.LANG) as Language) || 'bn';
+    const saved = readStringStorage(STORAGE_KEYS.LANG, 'bn');
+    return saved === 'en' ? 'en' : 'bn';
   });
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
-    localStorage.setItem(STORAGE_KEYS.LANG, lang);
+    writeStorage(STORAGE_KEYS.LANG, lang);
   };
 
   const [currentView, setCurrentView] = useState<ActivePageView>('home');
@@ -160,7 +195,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // User state
   const [currentRole, setCurrentRole] = useState<UserRole>(() => {
-    return (localStorage.getItem(STORAGE_KEYS.ROLE) as UserRole) || 'customer';
+    const saved = readStringStorage(STORAGE_KEYS.ROLE, 'customer');
+    return saved === 'admin' || saved === 'delivery' ? saved : 'customer';
   });
 
   const currentUser: UserProfile = {
@@ -186,7 +222,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const switchRole = (role: UserRole) => {
     setCurrentRole(role);
-    localStorage.setItem(STORAGE_KEYS.ROLE, role);
+    writeStorage(STORAGE_KEYS.ROLE, role);
     if (role === 'admin') {
       setCurrentView('admin-dashboard');
       showNotification(language === 'bn' ? 'অ্যাডমিন ড্যাশবোর্ডে প্রবেশ করা হয়েছে' : 'Switched to Admin Dashboard', 'info');
@@ -200,12 +236,12 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // Products
   const [products, setProducts] = useState<Product[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.PRODUCTS);
-    return saved ? JSON.parse(saved) : INITIAL_PRODUCTS;
+    const parsed = readStorage<Product[]>(STORAGE_KEYS.PRODUCTS, INITIAL_PRODUCTS);
+    return Array.isArray(parsed) ? parsed.map(normalizeProductAssets) : INITIAL_PRODUCTS;
   });
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(products));
+    writeStorage(STORAGE_KEYS.PRODUCTS, products);
   }, [products]);
 
   // Categories
@@ -213,12 +249,17 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // Cart
   const [cart, setCart] = useState<CartItem[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.CART);
-    return saved ? JSON.parse(saved) : [];
+    const parsed = readStorage<CartItem[]>(STORAGE_KEYS.CART, []);
+    return Array.isArray(parsed)
+      ? parsed.map((item) => ({
+          ...item,
+          product: normalizeProductAssets(item.product),
+        }))
+      : [];
   });
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.CART, JSON.stringify(cart));
+    writeStorage(STORAGE_KEYS.CART, cart);
   }, [cart]);
 
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -303,12 +344,12 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // Wishlist
   const [wishlist, setWishlist] = useState<string[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.WISHLIST);
-    return saved ? JSON.parse(saved) : ['prod-sundarban-honey'];
+    const parsed = readStorage<string[]>(STORAGE_KEYS.WISHLIST, ['prod-sundarban-honey']);
+    return Array.isArray(parsed) ? parsed : ['prod-sundarban-honey'];
   });
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.WISHLIST, JSON.stringify(wishlist));
+    writeStorage(STORAGE_KEYS.WISHLIST, wishlist);
   }, [wishlist]);
 
   const toggleWishlist = (productId: string) => {
@@ -336,9 +377,13 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // Coupons
   const [coupons, setCoupons] = useState<Coupon[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.COUPONS);
-    return saved ? JSON.parse(saved) : INITIAL_COUPONS;
+    const parsed = readStorage<Coupon[]>(STORAGE_KEYS.COUPONS, INITIAL_COUPONS);
+    return Array.isArray(parsed) ? parsed : INITIAL_COUPONS;
   });
+
+  useEffect(() => {
+    writeStorage(STORAGE_KEYS.COUPONS, coupons);
+  }, [coupons]);
 
   const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
 
@@ -380,32 +425,38 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // Orders
   const [orders, setOrders] = useState<Order[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.ORDERS);
-    return saved ? JSON.parse(saved) : INITIAL_ORDERS;
+    const parsed = readStorage<Order[]>(STORAGE_KEYS.ORDERS, INITIAL_ORDERS);
+    return Array.isArray(parsed)
+      ? parsed.map((ord) => ({
+          ...ord,
+          items: Array.isArray(ord.items)
+            ? ord.items.map((it) => ({ ...it, product: normalizeProductAssets(it.product) }))
+            : [],
+        }))
+      : INITIAL_ORDERS;
   });
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(orders));
+    writeStorage(STORAGE_KEYS.ORDERS, orders);
   }, [orders]);
 
   // Delivery Staff
   const [deliveryStaff, setDeliveryStaff] = useState<DeliveryStaff[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.STAFF);
-    return saved ? JSON.parse(saved) : INITIAL_DELIVERY_STAFF;
+    const parsed = readStorage<DeliveryStaff[]>(STORAGE_KEYS.STAFF, INITIAL_DELIVERY_STAFF);
+    return Array.isArray(parsed) ? parsed : INITIAL_DELIVERY_STAFF;
   });
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.STAFF, JSON.stringify(deliveryStaff));
+    writeStorage(STORAGE_KEYS.STAFF, deliveryStaff);
   }, [deliveryStaff]);
 
   // Settings
   const [settings, setSettings] = useState<StoreSettings>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.SETTINGS);
-    return saved ? JSON.parse(saved) : INITIAL_SETTINGS;
+    return readStorage<StoreSettings>(STORAGE_KEYS.SETTINGS, INITIAL_SETTINGS);
   });
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));
+    writeStorage(STORAGE_KEYS.SETTINGS, settings);
   }, [settings]);
 
   const updateSettings = (newSettings: Partial<StoreSettings>) => {
@@ -415,12 +466,12 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // Reviews
   const [reviews, setReviews] = useState<Review[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.REVIEWS);
-    return saved ? JSON.parse(saved) : INITIAL_REVIEWS;
+    const parsed = readStorage<Review[]>(STORAGE_KEYS.REVIEWS, INITIAL_REVIEWS);
+    return Array.isArray(parsed) ? parsed : INITIAL_REVIEWS;
   });
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.REVIEWS, JSON.stringify(reviews));
+    writeStorage(STORAGE_KEYS.REVIEWS, reviews);
   }, [reviews]);
 
   const addReview = (review: Omit<Review, 'id' | 'date'>) => {

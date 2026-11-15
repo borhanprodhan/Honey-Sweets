@@ -1,4 +1,5 @@
 import { Category, Coupon, DeliveryStaff, Order, Product, Review, StoreSettings } from '../types';
+import { ASSETS } from '../assets/images';
 
 export const INITIAL_CATEGORIES: Category[] = [
   {
@@ -6,7 +7,7 @@ export const INITIAL_CATEGORIES: Category[] = [
     name: 'Pure Honey',
     nameBn: 'খাঁটি মধু',
     slug: 'pure-honey',
-    image: '/src/assets/images/honey_sundarban_pure_1794457838212.jpg',
+    image: ASSETS.honeySundarbanPure,
     description: '100% natural and raw unpasteurized honey direct from beekeepers and forests.',
     descriptionBn: 'সরাসরি মৌচাক ও সুন্দরবন থেকে সংগৃহীত ১০০% বিশুদ্ধ ও প্রাকৃতিক মধু।',
     count: 4,
@@ -16,7 +17,7 @@ export const INITIAL_CATEGORIES: Category[] = [
     name: 'Traditional Sweets',
     nameBn: 'ঐতিহ্যবাহী মিষ্টি',
     slug: 'traditional-sweets',
-    image: '/src/assets/images/sweets_roshogolla_1794457839024.jpg',
+    image: ASSETS.sweetsRoshogolla,
     description: 'Freshly prepared Bengali sweets with pure cow milk chhana and authentic aroma.',
     descriptionBn: 'খাঁটি গরুর দুধের ছানা এবং ঐতিহ্যবাহী রন্ধনশিল্পে তৈরি স্পঞ্জি রসগোল্লা ও মিষ্টি।',
     count: 5,
@@ -26,7 +27,7 @@ export const INITIAL_CATEGORIES: Category[] = [
     name: 'Premium Sweets',
     nameBn: 'প্রিমিয়াম মিষ্টি',
     slug: 'premium-sweets',
-    image: '/src/assets/images/sweets_kalojam_box_1794457839440.jpg',
+    image: ASSETS.sweetsKalojamBox,
     description: 'Mawa-rich Kalo Jam, Chomchom, and saffron infused royal delicacies.',
     descriptionBn: 'মাওয়া ও পেস্তা বাদামে মোড়ানো স্পেশাল কালোজাম, চমচম ও রাজকীয় মিষ্টি।',
     count: 4,
@@ -36,7 +37,7 @@ export const INITIAL_CATEGORIES: Category[] = [
     name: 'Gift Boxes & Combos',
     nameBn: 'গিফট বক্স ও কম্বো',
     slug: 'gift-boxes',
-    image: '/src/assets/images/hero_honey_sweets_1794457838197.jpg',
+    image: ASSETS.heroHoneySweets,
     description: 'Curated gift boxes combining premium honey jars and assorted sweets.',
     descriptionBn: 'উপহার ও বিশেষ উৎসবের জন্য সাজানো প্রিমিয়াম মধু ও রাজকীয় মিষ্টির কম্বো বক্স।',
     count: 3,
@@ -55,8 +56,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     description: 'Raw, unfiltered, and harvested by traditional Mawalis deep in the Sundarbans mangrove forest. Rich in antioxidants and natural enzymes with a distinct botanical floral aroma.',
     descriptionBn: 'সুন্দরবনের গভীর ম্যানগ্রোভ বন থেকে মৌয়ালদের হাতে সংগৃহীত খাঁটি বুনো মধু। কোনো প্রকার কৃত্রিম প্রসেসিং বা চিনি ছাড়া প্রাকৃতিকভাবে বোতলজাত।',
     images: [
-      '/src/assets/images/honey_sundarban_pure_1794457838212.jpg',
-      '/src/assets/images/hero_honey_sweets_1794457838197.jpg',
+      ASSETS.honeySundarbanPure,
+      ASSETS.heroHoneySweets,
     ],
     regularPrice: 950,
     salePrice: 780,
@@ -91,8 +92,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     description: 'Mouth-melting authentic Bengali Roshogolla prepared daily from pure cow milk chhana, gently cooked in light cardamom and saffron-infused sugar syrup.',
     descriptionBn: 'খাঁটি দেশি গরুর দুধের ছানা দিয়ে তৈরি নরম তুলতুলে ঐতিহ্যবাহী স্পঞ্জ রসগোল্লা। প্রতিদিন ফ্রেশ তৈরি এবং সুগন্ধি এলাচ সিরায় সংরক্ষিত।',
     images: [
-      '/src/assets/images/sweets_roshogolla_1794457839024.jpg',
-      '/src/assets/images/hero_honey_sweets_1794457838197.jpg',
+      ASSETS.sweetsRoshogolla,
+      ASSETS.heroHoneySweets,
     ],
     regularPrice: 420,
     salePrice: 350,
@@ -127,8 +128,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     description: 'Deep caramelized Kalo Jam and ghee-roasted Chomchom crusted with mawa and roasted pistachios. Served in a luxury presentation box.',
     descriptionBn: 'ঘিয়ে ভাজা গাঢ় সোনালী কালোজাম এবং ক্ষীরসায় মোড়ানো চমচম। উপরে পেস্তা বাদাম ও খাঁটি মাওয়ার গুঁড়া ছিটানো রাজকীয় উপহার বক্স।',
     images: [
-      '/src/assets/images/sweets_kalojam_box_1794457839440.jpg',
-      '/src/assets/images/sweets_roshogolla_1794457839024.jpg',
+      ASSETS.sweetsKalojamBox,
+      ASSETS.sweetsRoshogolla,
     ],
     regularPrice: 750,
     salePrice: 620,
@@ -162,7 +163,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     description: 'Natural light-golden mustard flower honey harvested during the winter bloom. Naturally crystallizes into a buttery smooth spread packed with vitality.',
     descriptionBn: 'শীতকালে হলদে সরিষা ক্ষেতের মৌচাক থেকে সরাসরি সংগৃহীত। প্রাকৃতিকভাবে ঘন এবং মাখনের মতো মসৃণ টেক্সচারযুক্ত পুষ্টিকর মধু।',
     images: [
-      '/src/assets/images/honey_sundarban_pure_1794457838212.jpg',
+      ASSETS.honeySundarbanPure,
     ],
     regularPrice: 550,
     salePrice: 450,
@@ -197,7 +198,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     description: 'Rare therapeutic honey harvested from blooming Kalonji (Black Seed) farms. Dark amber color with a bold therapeutic flavour and high medicinal properties.',
     descriptionBn: 'কালোজিরা ফুলের ফুলন্ত মৌসুমে সংগৃহীত অতি মূল্যবান ও গাঢ় রঙের ওষধি মধু। রোগ প্রতিরোধ ক্ষমতা বৃদ্ধির জন্য অতুলনীয়।',
     images: [
-      '/src/assets/images/honey_sundarban_pure_1794457838212.jpg',
+      ASSETS.honeySundarbanPure,
     ],
     regularPrice: 850,
     salePrice: 720,
@@ -232,8 +233,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     description: 'The signature Honey-Sweets celebration pack: 500g Sundarbans Honey jar + 1kg Assorted Kalo Jam & Spongy Roshogolla in a commemorative gold embossed gift box.',
     descriptionBn: 'হানিসুইটস এর সেরা আকর্ষণ: ৫০০ গ্রাম সুন্দরবনের খাঁটি মধু এবং ১ কেজি সেরা রসগোল্লা ও কালোজামের স্পেশাল উৎসব কম্বো।',
     images: [
-      '/src/assets/images/hero_honey_sweets_1794457838197.jpg',
-      '/src/assets/images/sweets_kalojam_box_1794457839440.jpg',
+      ASSETS.heroHoneySweets,
+      ASSETS.sweetsKalojamBox,
     ],
     regularPrice: 1550,
     salePrice: 1250,

@@ -19,6 +19,7 @@ import {
   Search,
 } from 'lucide-react';
 import { OrderStatus, Product, Coupon } from '../types';
+import { ASSETS } from '../assets/images';
 
 export const AdminDashboard: React.FC = () => {
   const {
@@ -62,7 +63,7 @@ export const AdminDashboard: React.FC = () => {
     originBn: 'গাইবান্ধা, বাংলাদেশ',
     purityGuarantee: '100% Lab Tested',
     purityGuaranteeBn: 'ল্যাব টেস্টে শতভাগ খাঁটি',
-    images: ['/src/assets/images/honey_sundarban_pure_1794457838212.jpg'],
+    images: [ASSETS.honeySundarbanPure],
     isFeatured: true,
     isFlashSale: false,
     isBestSeller: false,
@@ -107,7 +108,7 @@ export const AdminDashboard: React.FC = () => {
       originBn: 'গাইবান্ধা, বাংলাদেশ',
       purityGuarantee: '100% Pure',
       purityGuaranteeBn: '১০০% খাঁটি ও নির্ভেজাল',
-      images: ['/src/assets/images/honey_sundarban_pure_1794457838212.jpg'],
+      images: [ASSETS.honeySundarbanPure],
       isFeatured: true,
       isFlashSale: false,
       isBestSeller: false,

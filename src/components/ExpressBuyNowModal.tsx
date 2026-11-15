@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useStore } from '../context/StoreContext';
 import {
   X,
@@ -38,6 +38,14 @@ export const ExpressBuyNowModal: React.FC = () => {
   const [orderNotes, setOrderNotes] = useState('');
   const [confirmedOrder, setConfirmedOrder] = useState<Order | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (buyNowItem) {
+      setQuantity(buyNowItem.quantity || 1);
+      setSelectedWeight(buyNowItem.selectedWeight || buyNowItem.product.weight);
+      setConfirmedOrder(null);
+    }
+  }, [buyNowItem]);
 
   if (!buyNowItem && !confirmedOrder) return null;
 

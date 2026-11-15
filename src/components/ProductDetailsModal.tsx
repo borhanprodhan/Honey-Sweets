@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useStore } from '../context/StoreContext';
 import {
   X,
@@ -37,6 +37,15 @@ export const ProductDetailsModal: React.FC = () => {
   const [reviewerName, setReviewerName] = useState('');
   const [reviewerRating, setReviewerRating] = useState(5);
   const [reviewerComment, setReviewerComment] = useState('');
+
+  useEffect(() => {
+    if (product) {
+      setActiveImageIdx(0);
+      setSelectedWeight(product.weight);
+      setQuantity(1);
+      setActiveTab('desc');
+    }
+  }, [product]);
 
   if (!product) return null;
 
