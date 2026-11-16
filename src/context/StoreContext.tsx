@@ -436,12 +436,16 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [orders, setOrders] = useState<Order[]>(() => {
     const parsed = readStorage<Order[]>(STORAGE_KEYS.ORDERS, INITIAL_ORDERS);
     return Array.isArray(parsed)
-      ? parsed.map((ord) => ({
-          ...ord,
-          items: Array.isArray(ord.items)
-            ? ord.items.map((it) => ({ ...it, product: normalizeProductAssets(it.product) }))
-            : [],
-        }))
+      ? parsed
+          .filter((ord) => ord && typeof ord === 'object')
+          .map((ord) => ({
+            ...ord,
+            items: Array.isArray(ord.items)
+              ? ord.items
+                  .filter((it) => it && typeof it === 'object')
+                  .map((it) => ({ ...it, product: normalizeProductAssets(it.product) }))
+              : [],
+          }))
       : INITIAL_ORDERS;
   });
 
@@ -452,7 +456,9 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   // Delivery Staff
   const [deliveryStaff, setDeliveryStaff] = useState<DeliveryStaff[]>(() => {
     const parsed = readStorage<DeliveryStaff[]>(STORAGE_KEYS.STAFF, INITIAL_DELIVERY_STAFF);
-    return Array.isArray(parsed) ? parsed : INITIAL_DELIVERY_STAFF;
+    return Array.isArray(parsed)
+      ? parsed.filter((s) => s && typeof s === 'object')
+      : INITIAL_DELIVERY_STAFF;
   });
 
   useEffect(() => {
@@ -461,7 +467,10 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // Settings
   const [settings, setSettings] = useState<StoreSettings>(() => {
-    return readStorage<StoreSettings>(STORAGE_KEYS.SETTINGS, INITIAL_SETTINGS);
+    const parsed = readStorage<Partial<StoreSettings> | null>(STORAGE_KEYS.SETTINGS, null);
+    return parsed && typeof parsed === 'object'
+      ? { ...INITIAL_SETTINGS, ...parsed }
+      : INITIAL_SETTINGS;
   });
 
   useEffect(() => {
@@ -476,7 +485,9 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   // Reviews
   const [reviews, setReviews] = useState<Review[]>(() => {
     const parsed = readStorage<Review[]>(STORAGE_KEYS.REVIEWS, INITIAL_REVIEWS);
-    return Array.isArray(parsed) ? parsed : INITIAL_REVIEWS;
+    return Array.isArray(parsed)
+      ? parsed.filter((r) => r && typeof r === 'object')
+      : INITIAL_REVIEWS;
   });
 
   useEffect(() => {

@@ -15,6 +15,90 @@
   </head>
   <body class="bg-[#FFFDF9] text-[#252525] antialiased selection:bg-[#E5A000]/20 selection:text-[#4A2E16]">
     <div id="root"></div>
+    <noscript>
+      <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:#FFF9EC;color:#4A2E16;font-family:system-ui,sans-serif;text-align:center;">
+        <div style="max-width:460px;background:#fff;border:1px solid #E5A000;border-radius:16px;padding:28px;">
+          <h1 style="margin:0 0 8px;font-size:20px;">Honey-Sweets</h1>
+          <p style="margin:0;font-size:14px;color:#57534E;">Please enable JavaScript in your browser to shop at Honey-Sweets.</p>
+        </div>
+      </div>
+    </noscript>
+    <script>
+      (function () {
+        var shown = false;
+        var lastError = '';
+        function showFallback(reason) {
+          if (shown || window.__HONEY_SWEETS_MOUNTED__) return;
+          var root = document.getElementById('root');
+          if (!root || root.children.length > 0) return;
+          shown = true;
+
+          var isUnbuiltSource = !!document.querySelector('script[type="module"][src*="/src/main.tsx"]');
+          var card = document.createElement('div');
+          card.setAttribute('style', 'min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:#FFF9EC;color:#252525;font-family:system-ui,-apple-system,sans-serif;');
+
+          var box = document.createElement('div');
+          box.setAttribute('style', 'max-width:520px;width:100%;background:#FFFFFF;border:1px solid rgba(229,160,0,0.45);border-radius:18px;padding:28px;box-shadow:0 12px 30px rgba(74,46,22,0.08);text-align:center;');
+
+          var badge = document.createElement('div');
+          badge.setAttribute('style', 'width:48px;height:48px;margin:0 auto 14px;border-radius:12px;background:#4A2E16;color:#E5A000;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;');
+          badge.textContent = 'HS';
+          box.appendChild(badge);
+
+          var title = document.createElement('h1');
+          title.setAttribute('style', 'margin:0 0 10px;font-size:20px;font-weight:700;color:#4A2E16;');
+          title.textContent = isUnbuiltSource ? 'Honey-Sweets — GitHub Pages Build Required' : 'Honey-Sweets — Unable to Load Store';
+          box.appendChild(title);
+
+          var msg = document.createElement('p');
+          msg.setAttribute('style', 'margin:0 0 16px;font-size:14px;line-height:1.6;color:#57534E;');
+          msg.textContent = isUnbuiltSource
+            ? 'GitHub Pages is currently serving raw source files from the branch root instead of the compiled production bundle. Switch your repository Settings -> Pages -> Source to "GitHub Actions" so the deploy workflow builds and publishes dist/.'
+            : (reason || lastError || 'A script or cached asset failed to load. Click below to reset cache and reload.');
+          box.appendChild(msg);
+
+          var btn = document.createElement('button');
+          btn.setAttribute('style', 'padding:10px 20px;border:none;border-radius:10px;background:#E5A000;color:#4A2E16;font-weight:700;font-size:13px;cursor:pointer;');
+          btn.textContent = 'Clear Cache & Reload';
+          btn.onclick = function () {
+            try {
+              Object.keys(window.localStorage || {}).forEach(function (k) {
+                if (k.indexOf('honey_sweets_') === 0) window.localStorage.removeItem(k);
+              });
+            } catch (e) {}
+            window.location.reload();
+          };
+          box.appendChild(btn);
+
+          card.appendChild(box);
+          root.appendChild(card);
+        }
+
+        window.addEventListener('error', function (ev) {
+          if (ev && ev.message) lastError = String(ev.message);
+          var target = ev && ev.target;
+          if (target && target.tagName === 'SCRIPT') {
+            showFallback('Failed to load application script: ' + (target.getAttribute('src') || 'module'));
+          } else {
+            setTimeout(function () {
+              if (!window.__HONEY_SWEETS_MOUNTED__) showFallback(lastError);
+            }, 250);
+          }
+        }, true);
+
+        window.addEventListener('unhandledrejection', function (ev) {
+          if (ev && ev.reason) {
+            lastError = String(ev.reason.message || ev.reason);
+          }
+        });
+
+        setTimeout(function () {
+          if (!window.__HONEY_SWEETS_MOUNTED__) {
+            showFallback(lastError);
+          }
+        }, 4000);
+      })();
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
